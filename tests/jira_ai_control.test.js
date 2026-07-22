@@ -44,18 +44,26 @@ test('validateTransitionStatus rejects archive states', () => {
   assert.throws(() => jira.validateTransitionStatus('[TRIAGED]'), /archive document state/);
 });
 
-test('buildDescriptionText contains DOS binding block', () => {
+test('buildDescriptionText contains DOS and GitHub binding blocks', () => {
   const text = jira.buildDescriptionText({
     artifactId: 'GAP-ID-REGISTRY',
     truthLink: 'docs/game_design_archive/02_analysis/2026-07-22-workflow-system-review.md',
     sourceId: 'RULE-SRC-0003',
     evidenceLinks: 'docs/game_design_archive/06_rule_sources/README.md',
     decisionSource: 'Workflow review section 3.7 marks ID/hash dedup as PENDING_ACTION.',
+    githubPr: 'https://github.com/Uzin1998/FPSR/pull/1',
+    gitCommit: 'abc1234',
+    githubEvidence: 'CI passed on GitHub Actions run 1',
   });
 
   assert.ok(text.includes('Artifact ID: GAP-ID-REGISTRY'));
   assert.ok(text.includes('Truth Link: docs/game_design_archive/02_analysis/2026-07-22-workflow-system-review.md'));
   assert.ok(text.includes('Source ID: RULE-SRC-0003'));
+  assert.ok(text.includes('GitHub PR: https://github.com/Uzin1998/FPSR/pull/1'));
+  assert.ok(text.includes('Git Commit: abc1234'));
+  assert.ok(text.includes('GitHub Evidence: CI passed on GitHub Actions run 1'));
+  assert.ok(text.includes('GitHub PR linked when repository content changed'));
+  assert.ok(text.includes('Git commit linked when repository content changed'));
   assert.ok(text.includes('Done Check:'));
   assert.ok(text.includes('Rule Source registered or cited'));
 });
@@ -155,6 +163,48 @@ test('main create without apply prints dry-run payload', async () => {
   assert.ok(rendered.includes('"apply": false'));
   assert.ok(rendered.includes('"path": "/rest/api/3/issue"'));
   assert.ok(rendered.includes('GAP-ID-REGISTRY'));
+  assert.ok(!rendered.includes('secret-token'));
+});
+
+test('main create dry-run accepts GitHub evidence options', async () => {
+  const output = [];
+  const env = {
+    JIRA_BASE_URL: 'https://example.atlassian.net',
+    JIRA_EMAIL: 'user@example.com',
+    JIRA_API_TOKEN: 'secret-token',
+    JIRA_PROJECT_KEY: 'DOS',
+  };
+
+  const exitCode = await jira.main(
+    [
+      'create',
+      '--type',
+      'Gap',
+      '--summary',
+      'Establish central ID and evidence registry',
+      '--artifact-id',
+      'GAP-ID-REGISTRY',
+      '--truth-link',
+      'docs/game_design_archive/02_analysis/2026-07-22-workflow-system-review.md',
+      '--source-id',
+      'RULE-SRC-0003',
+      '--github-pr',
+      'https://github.com/Uzin1998/FPSR/pull/1',
+      '--git-commit',
+      'abc1234',
+      '--github-evidence',
+      'CI passed on GitHub Actions run 1',
+    ],
+    env,
+    line => output.push(line),
+    line => output.push(line),
+  );
+
+  const rendered = output.join('\n');
+  assert.strictEqual(exitCode, 0);
+  assert.ok(rendered.includes('GitHub PR: https://github.com/Uzin1998/FPSR/pull/1'));
+  assert.ok(rendered.includes('Git Commit: abc1234'));
+  assert.ok(rendered.includes('GitHub Evidence: CI passed on GitHub Actions run 1'));
   assert.ok(!rendered.includes('secret-token'));
 });
 

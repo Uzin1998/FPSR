@@ -98,12 +98,17 @@ function buildDescriptionText(options) {
     `Source ID: ${options.sourceId || ''}`,
     `Evidence Links: ${options.evidenceLinks || ''}`,
     `Decision Source: ${options.decisionSource || ''}`,
+    `GitHub PR: ${options.githubPr || ''}`,
+    `Git Commit: ${options.gitCommit || ''}`,
+    `GitHub Evidence: ${options.githubEvidence || ''}`,
     '',
     'Done Check:',
     '- [ ] Markdown updated or no-doc-change reason recorded',
     '- [ ] Artifact ID or Source ID bound',
     '- [ ] Truth Link traceable',
     '- [ ] Evidence links present for Decision/Bug/Gap/Validation',
+    '- [ ] GitHub PR linked when repository content changed',
+    '- [ ] Git commit linked when repository content changed',
     '- [ ] No dangling referenced IDs',
     '- [ ] Rule Source registered or cited if this issue creates a rule/status statement',
   ];
@@ -163,6 +168,9 @@ function buildIssuePayload(options) {
     sourceId: options.sourceId,
     evidenceLinks: options.evidenceLinks,
     decisionSource: options.decisionSource,
+    githubPr: options.githubPr,
+    gitCommit: options.gitCommit,
+    githubEvidence: options.githubEvidence,
     body: options.body,
   });
 
@@ -421,6 +429,9 @@ async function main(argv = process.argv.slice(2), env = process.env, stdout = co
         sourceId: parsed.options['source-id'] || '',
         evidenceLinks: parsed.options['evidence-links'] || '',
         decisionSource: parsed.options['decision-source'] || '',
+        githubPr: parsed.options['github-pr'] || '',
+        gitCommit: parsed.options['git-commit'] || '',
+        githubEvidence: parsed.options['github-evidence'] || '',
         body: parsed.options.body || '',
       });
 
