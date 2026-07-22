@@ -1,0 +1,16 @@
+.env
+*.env
+!*.env.example
+tools/jira_ai_control.env
+tools/jira_ai_control.local.env
+node_modules/
+npm-debug.log*
+yarn-error.log*
+coverage/
+dist/
+build/
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.trae/

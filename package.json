@@ -1,0 +1,12 @@
+{
+  "name": "fpsr-dos",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Design Operating System governance tooling for FPSR.",
+  "scripts": {
+    "test": "node tests/jira_ai_control.test.js"
+  },
+  "engines": {
+    "node": ">=14"
+  }
+}
