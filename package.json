@@ -4,7 +4,7 @@
   "private": true,
   "description": "Design Operating System governance tooling for FPSR.",
   "scripts": {
-    "test": "node tests/jira_ai_control.test.js"
+    "test": "node tests/jira_ai_control.test.js && node tests/dos_governance_check.test.js"
   },
   "engines": {
     "node": ">=14"
